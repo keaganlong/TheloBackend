@@ -1,7 +1,3 @@
-/**s
- * New node file
- */
-
 var EventModel = {
 	  title: String,
 	  description: String,

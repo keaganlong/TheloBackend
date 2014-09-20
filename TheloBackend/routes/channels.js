@@ -1,8 +1,5 @@
-
-/*
- * GET users listing.
- */
 var Channel;
+
 function getChannels(req, res) {
 	Channel.find(function(err,channels){
 		if(err){

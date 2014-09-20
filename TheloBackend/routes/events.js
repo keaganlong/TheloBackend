@@ -1,7 +1,3 @@
-
-/*
- * GET users listing.
- */
 var Event;
 
 function getEvents(req, res) {
@@ -36,9 +32,9 @@ function createEvent(req, res) {
 }
 
 function setup(app,mong) {
-	Channel = mong.model('Event');
+	Event = mong.model('Event');
 	app.get('/events', getEvents);
-	app.post('/event/:eventTitle', createEvent);
+	app.post('/event/:eventTitle/:eventDescription/:lat/:lng/:startDate/:endDate', createEvent);
 }
 
 module.exports = setup;
