@@ -6,15 +6,11 @@ function getAllEventsWithinRange(req, res) {
 	var lat = input.lat;
 	var lng = input.lng;
 	var range = input.range;
-	Event.find(function(err,events){
-		if(err){
-			
-		}
-		else{
-			var filteredEvents = filterEventsByLatLndRange(events,lat,lng,range);
-			res.setHeader('Content-Type', 'application/json');
-		    res.end(JSON.stringify({ events:filteredEvents  }));
-		}
+	var channelName = input.channelName;
+	Channel.findOne({name:channelName}).populate('events').exec(function(err,channel){
+		var filteredEvents = filterEventsByLatLndRange(channel.events,lat,lng,range);
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ events:filteredEvents  }));
 	});
 }
 
@@ -54,36 +50,47 @@ function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 }
 
 function createEvent(req, res) {
-	var description = req.params.eventDescription || "";
-	var newEvent = new Event({
-		  title: req.params.eventTitle,
-		  description: description,
-		  lat: req.params.lat,
-		  lng: req.params.lng,
-		  startDate: req.params.startEPOC,
-		  endDate: req.params.endEPOC,
-		  comments: []
-	});
-	
-	newEvent.save(function(err, product, numAffected) {
-	  var response = {};
-	  if (err){
-		  response.success = false;
-		  response.message = "Error occured. Entry not added";
-	  }
-	  else{
-		  response.success = true;
-	  }
-	  res.setHeader('Content-Type', 'application/json');
-	  res.end(JSON.stringify(response));
-	});
+	var eventInput = req.body;
+	//TODO Validation !~@~!
+	var channelName = eventInput.channelName;
+	Channel.findOne({ name: channelName }).populate('events').exec(function(err,channel){
+		if(!channel || err){
+			//TODO Return message stuff false yeah
+		}
+		else{
+			var newEvent = new Event({
+				  title: eventInput.title,
+				  description: eventInput.description,
+				  lat: eventInput.lat,
+				  lng: eventInput.lng,
+				  startDate: eventInput.startDate,
+				  endDate: eventInput.endDate
+			});
+			newEvent.save(function(err){
+				if(err) console.log(err);
+			});
+			channel.events.push(newEvent);
+			channel.save(function(err, product, numAffected) {
+				  var response = {};
+				  if (err){  
+					  response.success = false;
+					  response.message = "Error occured. Entry not added";
+				  }
+				  else{
+					  response.success = true;
+				  }
+				  res.setHeader('Content-Type', 'application/json');
+				  res.end(JSON.stringify(response));
+				})
+		}
+	})
 }
 
 function setup(app,mong) {
 	Event = mong.model('Event');
 	Channel = mong.model('Channel');
-	app.post('/events/getAllEventsWithinRange', getAllEventsWithinRange);
-	app.post('/event/:eventTitle/:lat/:lng/:startEPOC/:endEPOC/:eventDescription?', createEvent);
+	app.post('/event/getAllEventsWithinRange', getAllEventsWithinRange);
+	app.post('/event/addOne', createEvent);
 }
 
 module.exports = setup;

@@ -16,7 +16,8 @@ function addOneChannel(req, res) {
 	var channel = req.body;
 	var channelName = channel["name"];
 	var newChannel = new Channel({
-		name: channelName
+		name: channelName,
+		comments: []
 	});
 	
 	newChannel.save(function(err, product, numAffected) {
