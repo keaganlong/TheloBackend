@@ -17,7 +17,14 @@ var express = require('express')
   , path = require('path'),
   mongoose = require( 'mongoose' );
 
-mongoose.connect('mongodb://localhost/TheloDev');
+var secret = require('./secret');
+
+mongoose.connect(secret.db);
+console.log(secret.db);
+console.log(mongoose);
+mongoose.connection.on('error', function(error) {
+  console.error(error);
+});
 
 models.forEach(function (routePath) {
     var model = require(routePath);
