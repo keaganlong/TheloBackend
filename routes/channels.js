@@ -3,7 +3,9 @@ var Channel;
 function getAllChannels(req, res) {
 	Channel.find(function(err,channels){
 		if(err){
-			
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false  }));
+			return;
 		}
 		else{
 			res.setHeader('Content-Type', 'application/json');

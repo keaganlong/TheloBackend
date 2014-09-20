@@ -20,8 +20,7 @@ var express = require('express')
 var secret = require('./secret');
 
 mongoose.connect(secret.db);
-console.log(secret.db);
-console.log(mongoose);
+
 mongoose.connection.on('error', function(error) {
   console.error(error);
 });
