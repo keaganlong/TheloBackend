@@ -3,11 +3,13 @@
  * Module dependencies.
  */
 var routes = [
-              "./routes/channels"
+              "./routes/channels",
+              "./routes/events"
             ];
 
 var models = [
-              "./models/Channel"
+              "./models/Channel",
+              "./models/Event"
               ];
 
 var express = require('express')
