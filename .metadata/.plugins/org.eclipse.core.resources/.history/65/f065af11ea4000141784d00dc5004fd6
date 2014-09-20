@@ -1,0 +1,18 @@
+/**
+ * New node file
+ */
+
+var EventModel = {
+	  title: String,
+	  description: String,
+	  lat: Number,
+	  lng: Number,
+	  comments: Array
+};
+
+function setup(mongoose) {
+	var channelSchema = new mongoose.Schema(ChannelModel);
+	mongoose.model('Channel', channelSchema);
+}
+
+module.exports = setup;

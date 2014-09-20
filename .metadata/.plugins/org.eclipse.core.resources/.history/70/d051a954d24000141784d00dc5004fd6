@@ -1,0 +1,41 @@
+
+/**
+ * Module dependencies.
+ */
+var routes = [
+              "./routes/channels"
+            ];
+
+var models = [
+              "./models/channels"
+              ];
+
+var express = require('express')
+  , http = require('http')
+  , path = require('path'),
+  mongoose = require( 'mongoose' );
+
+var app = express();
+
+mongoose.connect('mongodb://localhost/TheloDev');
+
+models.forEach(function (routePath) {
+    var route = require(routePath);
+    route(mongoose);
+});
+
+
+routes.forEach(function (routePath) {
+    var route = require(routePath);
+    route(app);
+});
+
+app.set('port', process.env.PORT || 3000);
+
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});

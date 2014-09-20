@@ -1,0 +1,52 @@
+
+/**
+ * Module dependencies.
+ */
+var routes = [
+              "./routes/channels"
+            ];
+
+var models = [
+              "./models/channels"
+              ];
+
+var express = require('express')
+  , http = require('http')
+  , path = require('path'),
+  mongoose = require( 'mongoose' );
+
+var app = express();
+
+routes.forEach(function (routePath) {
+    var route = require(routePath);
+    route(app);
+});
+
+mongoose.connect('mongodb://localhost/TheloDev');
+
+
+
+//var channelSchema = new mongoose.Schema({
+//	  name: { type: String }
+//});
+//
+//var Channel = mongoose.model('Channel', channelSchema);
+//
+//var gtFoodChannel = new Channel({
+//	name:"GT-FOOD"
+//});
+//
+//gtFoodChannel.save(function(err, thor) {
+//  if (err) return console.error(err);
+//  console.dir(thor);
+//});
+
+app.set('port', process.env.PORT || 3000);
+
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});

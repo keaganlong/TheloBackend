@@ -1,0 +1,40 @@
+var Event;
+
+function getEvents(req, res) {
+	Event.find(function(err,events){
+		if(err){
+			
+		}
+		else{
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ events:events  }));
+		}
+	});
+}
+
+function createEvent(req, res) {
+	var newEvent = new Event({
+		title: req.params.eventTitle
+	});
+	
+	newEvent.save(function(err, product, numAffected) {
+	  var response = {};
+	  if (err){
+		  response.success = false;
+		  response.message = "Error occured. Entry not added";
+	  }
+	  else{
+		  response.success = true;
+	  }
+	  res.setHeader('Content-Type', 'application/json');
+	  res.end(JSON.stringify(response));
+	});
+}
+
+function setup(app,mong) {
+	Event = mong.model('Event');
+	app.get('/events', getEvents);
+	app.post('/event/:eventTitle/:eventDescription?/:lat?/:lng?/:startDate?/:endDate?', createEvent);
+}
+
+module.exports = setup;

@@ -1,6 +1,6 @@
 var Channel;
 
-function getChannels(req, res) {
+function getAllChannels(req, res) {
 	Channel.find(function(err,channels){
 		if(err){
 			
@@ -12,9 +12,11 @@ function getChannels(req, res) {
 	});
 }
 
-function createChannel(req, res) {
+function addOneChannel(req, res) {
+	var channel = req.body;
+	var channelName = channel["name"];
 	var newChannel = new Channel({
-		name: req.params.channelName
+		name: channelName
 	});
 	
 	newChannel.save(function(err, product, numAffected) {
@@ -33,8 +35,8 @@ function createChannel(req, res) {
 
 function setup(app,mong) {
 	Channel = mong.model('Channel');
-	app.get('/channel', getChannels);
-	app.post('/channel/:channelName', createChannel);
+	app.get('/channel/getAll', getAllChannels);
+	app.post('/channel/addOne', addOneChannel);
 }
 
 module.exports = setup;

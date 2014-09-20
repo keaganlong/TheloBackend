@@ -1,0 +1,22 @@
+
+/*
+ * GET users listing.
+ */
+
+exports.list = function(req, res){
+};
+
+function getCustomers(req, res) {
+	res.send("Tryna get a user?");
+}
+
+function createCustomer(req, res) {
+	console.log("post user");
+}
+
+function setup(app) {
+  app.post('/user', createCustomer);
+  app.get('/user', getCustomers);
+}
+
+module.exports = setup;

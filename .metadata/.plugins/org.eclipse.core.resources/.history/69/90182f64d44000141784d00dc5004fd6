@@ -1,0 +1,36 @@
+
+/*
+ * GET users listing.
+ */
+var Channel;
+function getChannels(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "retrivin" }));
+}
+
+function createChannel(req, res) {
+	var newChannel = new Channel({
+		name: req.params.channelName
+	});
+	var response = {};
+	newChannel.save(function(err, product, numAffected) {
+	  if (err){
+		  response.success = false;
+		  response.message = "Error occured. Entry not added";
+	  }
+	  else{
+		  response.success = true;
+	  }
+	});
+	res.setHeader('Content-Type', 'application/json');
+	res.end(JSON.stringify({ name: "retrivin" }));
+
+}
+
+function setup(app,mong) {
+	Channel = mong.model('Channel');
+	app.get('/channel', getChannels);
+	app.post('/channel/:channelName', createChannel);
+}
+
+module.exports = setup;

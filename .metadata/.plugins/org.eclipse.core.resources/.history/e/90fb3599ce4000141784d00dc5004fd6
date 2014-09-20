@@ -1,0 +1,22 @@
+
+/*
+ * GET users listing.
+ */
+
+exports.list = function(req, res){
+};
+
+function getCustomers(req, res) {
+	  res.send("respond with a user");
+}
+
+function createCustomer(req, res) {
+  //...
+}
+
+function setup(app) {
+  app.post('/user', createCustomer);
+  app.get('/user', getCustomers);
+}
+
+module.exports = setup;

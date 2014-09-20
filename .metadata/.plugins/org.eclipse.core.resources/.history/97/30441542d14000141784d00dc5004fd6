@@ -1,0 +1,20 @@
+
+/*
+ * GET users listing.
+ */
+
+function getCustomers(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "added a guy" }));
+}
+
+function createCustomer(req, res) {
+	console.log("post user");
+}
+
+function setup(app) {
+  app.post('/channel', createCustomer);
+  app.get('/channel', getCustomers);
+}
+
+module.exports = setup;

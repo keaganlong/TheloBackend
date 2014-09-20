@@ -1,0 +1,30 @@
+
+/*
+ * GET users listing.
+ */
+var Channel;
+function getChannels(req, res) {
+	
+	var gtFoodChannel = new Channel({
+		name:
+	});
+
+	gtFoodChannel.save(function(err, thor) {
+	  if (err) return console.error(err);
+	  console.dir(thor);
+	});
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "added a guy" }));
+}
+
+function createCustomer(req, res) {
+	console.log("post user");
+}
+
+function setup(app,mong) {
+	Channel = mong.model('Channel');
+	app.post('/channel', createCustomer);
+	app.get('/channel', getChannels);
+}
+
+module.exports = setup;

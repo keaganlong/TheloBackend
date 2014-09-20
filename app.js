@@ -25,6 +25,7 @@ models.forEach(function (routePath) {
 });
 
 var app = express();
+app.use(express.bodyParser());
 
 routes.forEach(function (routePath) {
     var route = require(routePath);

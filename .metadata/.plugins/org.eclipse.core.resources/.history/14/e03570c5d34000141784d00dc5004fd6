@@ -1,0 +1,28 @@
+
+/*
+ * GET users listing.
+ */
+var Channel;
+function getCustomers(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "retrivin" }));
+}
+
+function createCustomer(req, res) {
+	var newChannel = new Channel({
+		name: req.params.channelName
+	});
+
+	newChannel.save(function(err, product, numAffected) {
+	  if (err) return console.error(err);
+	  console.log(product+" "+numAffected);
+	});
+}
+
+function setup(app,mong) {
+	Channel = mong.model('Channel');
+	app.get('/channel', getChannels);
+	app.post('/channel:channelName', createCustomer);
+}
+
+module.exports = setup;

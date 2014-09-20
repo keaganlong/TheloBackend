@@ -1,0 +1,23 @@
+var ChannelModel = {
+	  name: { type: String }
+};
+
+var channelSchema = new mongoose.Schema(ChannelModel);
+
+var Channel = mongoose.model('Channel', channelSchema);
+
+function getCustomers(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "Alexandruuuuuu" }));
+}
+
+function createCustomer(req, res) {
+	console.log("post user");
+}
+
+function setup(mongoose) {
+  app.post('/channel', createCustomer);
+  app.get('/channel', getCustomers);
+}
+
+module.exports = setup;

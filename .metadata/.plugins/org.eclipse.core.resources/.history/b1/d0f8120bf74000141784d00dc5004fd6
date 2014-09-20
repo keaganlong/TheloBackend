@@ -1,0 +1,55 @@
+var Event;
+var Channel;
+
+function getEvents(req, res) {
+	Event.find(function(err,events){
+		if(err){
+			
+		}
+		else{
+			var filteredEvents = filterEventsByLatLndRange(events,req.params.lat,req.params.lng,req.params.range);
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ events:filteredEvents  }));
+		}
+	});
+}
+
+function filterEventsByLatLndRange(events,req.params.lat,req.params.lng,req.params.range){
+	
+}
+
+function createEvent(req, res) {
+	var description = req.params.eventDescription || "";
+	var newEvent = new Event({
+		  title: req.params.eventTitle,
+		  description: description,
+		  lat: req.params.lat,
+		  lng: req.params.lng,
+		  startDate: req.params.startEPOC,
+		  endDate: req.params.endEPOC,
+		  comments: []
+	});
+	
+	newEvent.save(function(err, product, numAffected) {
+	  var response = {};
+	  if (err){
+		  response.success = false;
+		  response.message = "Error occured. Entry not added";
+	  }
+	  else{
+		  response.success = true;
+	  }
+	  res.setHeader('Content-Type', 'application/json');
+	  res.end(JSON.stringify(response));
+	});
+}
+
+function setup(app,mong) {
+	Event = mong.model('Event');
+	Channel = mong.model('Channel');
+	app.get('/events/:channelName/:lat/:lng/:range', getEvents);
+	app.post('/event/:eventTitle/:lat/:lng/:startEPOC/:endEPOC/:eventDescription?', createEvent);
+}
+
+module.exports = setup;
+

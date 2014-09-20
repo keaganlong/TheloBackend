@@ -1,0 +1,31 @@
+
+/*
+ * GET users listing.
+ */
+
+var mongoose;
+function getCustomers(req, res) {
+	console.log(mongoose);
+	var gtFoodChannel = new Channel({
+		name:"GT-FOOD!?!?!"
+	});
+
+	gtFoodChannel.save(function(err, thor) {
+	  if (err) return console.error(err);
+	  console.dir(thor);
+	});
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ name: "added a guy" }));
+}
+
+function createCustomer(req, res) {
+	console.log("post user");
+}
+
+function setup(app,mongoose) {
+	this.mongoose = mongoose;
+	app.post('/channel', createCustomer);
+	app.get('/channel', getCustomers);
+}
+
+module.exports = setup;

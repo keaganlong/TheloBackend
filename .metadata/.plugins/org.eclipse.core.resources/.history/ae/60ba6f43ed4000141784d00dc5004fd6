@@ -1,0 +1,20 @@
+/**s
+ * New node file
+ */
+
+var EventModel = {
+	  title: String,
+	  description: String,
+	  lat: Number,
+	  lng: Number,
+	  startDate: { type: Date, default: Date.now },
+	  endDate:{ type: Date, default: Date.now},
+	  comments: Array
+};
+
+function setup(mongoose) {
+	var eventSchema = new mongoose.Schema(EventModel);
+	mongoose.model('Event', eventSchema);
+}
+
+module.exports = setup;
