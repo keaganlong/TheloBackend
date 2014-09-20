@@ -3,8 +3,8 @@ var EventModel = {
 	  description: String,
 	  lat: Number,
 	  lng: Number,
-	  startDate: { type: Date, default: Date.now },
-	  endDate:{ type: Date, default: Date.now},
+	  startDate: Number,
+	  endDate: Number,
 	  comments: Array
 };
 

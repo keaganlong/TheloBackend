@@ -1,4 +1,5 @@
 var Event;
+var Channel;
 
 function getEvents(req, res) {
 	Event.find(function(err,events){
@@ -6,15 +7,31 @@ function getEvents(req, res) {
 			
 		}
 		else{
+			var filteredEvents = filterEventsByLatLndRange(events,req.params.lat,req.params.lng,req.params.range);
 			res.setHeader('Content-Type', 'application/json');
-		    res.end(JSON.stringify({ events:events  }));
+		    res.end(JSON.stringify({ events:filteredEvents  }));
 		}
 	});
 }
 
+function filterEventsByLatLndRange(events,lat,lng,range){
+	var geoRange = getGeoRange(range);
+}
+
+function getGeoRange(meterRange){
+	
+}
+
 function createEvent(req, res) {
+	var description = req.params.eventDescription || "";
 	var newEvent = new Event({
-		title: req.params.eventTitle
+		  title: req.params.eventTitle,
+		  description: description,
+		  lat: req.params.lat,
+		  lng: req.params.lng,
+		  startDate: req.params.startEPOC,
+		  endDate: req.params.endEPOC,
+		  comments: []
 	});
 	
 	newEvent.save(function(err, product, numAffected) {
@@ -33,8 +50,10 @@ function createEvent(req, res) {
 
 function setup(app,mong) {
 	Event = mong.model('Event');
-	app.get('/events', getEvents);
-	app.post('/event/:eventTitle/:eventDescription/:lat/:lng/:startDate/:endDate', createEvent);
+	Channel = mong.model('Channel');
+	app.get('/events/:channelName/:lat/:lng/:range', getEvents);
+	app.post('/event/:eventTitle/:lat/:lng/:startEPOC/:endEPOC/:eventDescription?', createEvent);
 }
 
 module.exports = setup;
+
