@@ -2,12 +2,28 @@ var Event;
 var Channel;
 
 function getAllEventsWithinRange(req, res) {
+	function validate(body){
+		if(!(body && body.lat && body.lng && body.range && body.channelName)){
+			return false;
+		}
+		return true;
+	}
 	var input = req.body;
+	if(!validate(input)){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Bad body input." }));
+		return;
+	}
 	var lat = input.lat;
 	var lng = input.lng;
 	var range = input.range;
 	var channelName = input.channelName;
 	Channel.findOne({name:channelName}).populate('events').exec(function(err,channel){
+		if(!channel || err){
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false, message:"Channel not found or internal error." }));
+		    return;
+		}
 		var filteredEvents = filterEventsByLatLndRange(channel.events,lat,lng,range);
 		res.setHeader('Content-Type', 'application/json');
 	    res.end(JSON.stringify({ events:filteredEvents  }));
@@ -50,12 +66,21 @@ function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 }
 
 function createEvent(req, res) {
+	function validate(body){
+		if(!(body.channelName&&body.title && body.lat && body.lng && body.startDate && body.endDate)){
+			return false;
+		}
+		return true;
+	}
+	
 	var eventInput = req.body;
-	//TODO Validation !~@~!
+	
 	var channelName = eventInput.channelName;
 	Channel.findOne({ name: channelName }).populate('events').exec(function(err,channel){
 		if(!channel || err){
-			//TODO Return message stuff false yeah
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false, message:"Channel not found or internal error." }));
+		    return;
 		}
 		else{
 			var newEvent = new Event({
@@ -67,7 +92,10 @@ function createEvent(req, res) {
 				  endDate: eventInput.endDate
 			});
 			newEvent.save(function(err){
-				if(err) console.log(err);
+				if(err){
+					res.setHeader('Content-Type', 'application/json');
+				    res.end(JSON.stringify({ success:false, message:"Error saving event." }));
+				}
 			});
 			channel.events.push(newEvent);
 			channel.save(function(err, product, numAffected) {

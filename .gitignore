@@ -27,3 +27,5 @@ node_modules
 secret_local.js
 # Users Environment Variables
 .lock-wscript
+
+secret.js
