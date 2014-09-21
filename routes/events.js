@@ -1,6 +1,7 @@
 var Event;
 var Channel;
 var User;
+var Fuse = require("./tools/fuse");
 
 function getAllEventsWithinRange(req, res) {
 	if(req.get('Content-Type')!='application/json'){
@@ -95,14 +96,48 @@ function eventExistsInList(candidateEvent,events){
 	// refer to models/Event for properties of an event
 	for (var i = 0; i < events.length; i++)
 	{
+		var stringMatch = similarString(candidateEvent.title,events[i].title);
 		if (candidateEvent._channelId.equals(events[i]._channelId) &&
 			getDistanceBetweenTwoPoints(candidateEvent.lat, candidateEvent.lng, events[i].lat, events[i].lng) <= 200 &&
-			candidateEvent.title.toLowerCase() === events[i].title.toLowerCase())
+			stringMatch)
 		{
 			return true;
 		}
 	}
 
+	return false;
+}
+
+function similarString(string1, string2){
+	if(string1.indexOf(string2)!=-1 || string2.indexOf(string1)!=-1){
+		return true;
+	}
+	var alpha1 = {};
+	for(var i = 0; i<string1.length;i++){
+		var currChar = string1.charAt(i);
+		if(!alpha1[currChar]){
+			alpha1[currChar] = 1;
+		}
+		alpha1[currChar]++;
+	}
+	
+	var differenceBad = 0;
+	for(var j = 0; j<string2.length;j++){
+		var currChar = string2.charAt(j);
+		if(typeof alpha1[currChar] === 'undefined'){
+			differenceBad+=1;
+		}
+		else{
+			alpha1[currChar]--;
+			if(alpha1[currChar] < 1){
+				differenceBad+=1;
+			}
+		}
+	}
+	
+	if(differenceBad > 0.4*Math.max(string1.length,string2.length)){
+		return true;
+	}
 	return false;
 }
 
@@ -147,7 +182,7 @@ function createEvent(req, res) {
 				  _channelId: channel._id,
 				  comments: []
 			});
-			if(eventExistsInList(newEvent,channel.events)){
+			if(eventExistsInList(newEvent,filterEventsByTime(channel.events))){
 				res.setHeader('Content-Type', 'application/json');
 			    res.end(JSON.stringify({ success:false, message:"Event already reported." }));
 				return;
