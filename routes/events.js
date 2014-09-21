@@ -93,14 +93,15 @@ function eventExistsInList(candidateEvent,events){
 	//If event found in events in same channel as candidate, within X meters of candidate, and same/similar title and or description as candidate. Return true.
 	//use getDistanceBetweenTwoPoints to get meter distance
 	// refer to models/Event for properties of an event
-	for (var i = 0; i < events.length; i++):
+	for (var i = 0; i < events.length; i++)
+	{
 		if (candidateEvent._channelId.equals(events[i]._channelId) &&
 			getDistanceBetweenTwoPoints(candidateEvent.lat, candidateEvent.lng, events[i].lat, events[i].lng) <= 200 &&
 			candidateEvent.title.toLowerCase() === events[i].title.toLowerCase())
 		{
 			return true;
 		}
-
+	}
 
 	return false;
 }
