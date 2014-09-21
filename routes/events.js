@@ -254,8 +254,107 @@ function getNumberIntentUsersForEvent(req, res){
 	});
 }
 
-function addArrivedUser(){
+function addArrivedUser(req, res){
+	//im copying code and i feel dirty ill clean it later crunch time baby
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
+	function validate(body){
+		if(!(body && body.deviceId && body.eventId)){
+			return false;
+		}
+		return true;
+	}
 	
+	var input = req.body;
+	
+	if(!validate(input)){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Bad body input." }));
+	    return;
+	}
+	
+	var deviceId = input.deviceId;
+	var eventId = input.eventId;
+	
+	Event.findOne({_id:eventId}, function(err, event){
+		if(err || !event){
+			return;
+		}
+		else{
+			var intentUsers = event.intentUsers;
+			var arrivedUsers = event.arrivedUsers;
+			
+			var intentIndex = -1;
+			for(var k = 0; k<intentUsers.length && intentIndex==-1;k++){
+				if(intentUsers[k].deviceId===deviceId){
+					intentIndex = k;
+				}
+			}
+			
+			if(intentIndex!=-1){
+				intentUsers.splice(intentIndex,1);
+			}
+			
+			var add = true;
+			for(var i = 0; i<arrivedUsers.length && add;i++){
+				if(arrivedUsers[i].deviceId===deviceId){
+					add = false;
+				}
+			}
+			if(add){
+				User.findOne({deviceId:deviceId}, function(err, user){
+					if(err || !user){
+						return;
+					}
+					else{
+						arrivedUsers.push(user);
+						event.save();
+						res.setHeader('Content-Type', 'application/json');
+					    res.end(JSON.stringify({ success:true }));
+					}
+				});
+			}
+		}	
+	});
+}
+
+function getNumberArrivedUsersForEvent(req,res){
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
+	function validate(body){
+		if(!(body && body.eventId)){
+			return false;
+		}
+		return true;
+	}
+	
+	var input = req.body;
+	
+	if(!validate(input)){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Bad body input." }));
+	    return;
+	}
+	
+	var eventId = input.eventId;
+	Event.findOne({_id:eventId}, function(err, event){
+		if(err || !event){
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false, message:"No event found" }));
+			return;
+		}
+		else{
+			var count = event.arrivedUsers.length;
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ count:count }));
+		}
+	});
 }
 
 function setup(app,mong) {
@@ -267,6 +366,7 @@ function setup(app,mong) {
 	app.post('/event/addIntentUser', addIntentUser);
 	app.post('/event/getNumberIntentUsersForEvent',getNumberIntentUsersForEvent);
 	app.post('/event/addArrivedUser', addArrivedUser);
+	app.post('/event/getNumberArrivedUsersForEvent',getNumberArrivedUsersForEvent);
 }
 
 module.exports = setup;
