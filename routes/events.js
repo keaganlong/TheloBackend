@@ -101,7 +101,6 @@ function createEvent(req, res) {
 		    return;
 		}
 		else{
-			channel.events.push(newEvent);
 			var newEvent = new Event({
 				  title: eventInput.title,
 				  description: eventInput.description,
@@ -111,6 +110,7 @@ function createEvent(req, res) {
 				  endDate: eventInput.endDate,
 				  _channelId: channel._id
 			});
+			channel.events.push(newEvent);
 			newEvent.save(function(err){
 				if(err){
 					res.setHeader('Content-Type', 'application/json');
