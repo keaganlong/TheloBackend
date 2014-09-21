@@ -2,8 +2,13 @@ var Event;
 var Channel;
 
 function getAllEventsWithinRange(req, res) {
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
 	function validate(body){
-		if(!(body && body.lat && body.lng && body.range && body.channelName)){
+		if(!(body && body.range && body.channelName)){
 			return false;
 		}
 		return true;
@@ -66,8 +71,13 @@ function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 }
 
 function createEvent(req, res) {
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
 	function validate(body){
-		if(!(body.channelName&&body.title && body.lat && body.lng && body.startDate && body.endDate)){
+		if(!(body.channelName&&body.title && body.startDate && body.endDate)){
 			return false;
 		}
 		return true;
@@ -75,21 +85,31 @@ function createEvent(req, res) {
 	
 	var eventInput = req.body;
 	
+	if(!validate(eventInput)){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Bad body input." }));
+	    return;
+	}
+	
 	var channelName = eventInput.channelName;
+
 	Channel.findOne({ name: channelName }).populate('events').exec(function(err,channel){
+
 		if(!channel || err){
 			res.setHeader('Content-Type', 'application/json');
 		    res.end(JSON.stringify({ success:false, message:"Channel not found or internal error." }));
 		    return;
 		}
 		else{
+			channel.events.push(newEvent);
 			var newEvent = new Event({
 				  title: eventInput.title,
 				  description: eventInput.description,
 				  lat: eventInput.lat,
 				  lng: eventInput.lng,
 				  startDate: eventInput.startDate,
-				  endDate: eventInput.endDate
+				  endDate: eventInput.endDate,
+				  _channelId: channel._id
 			});
 			newEvent.save(function(err){
 				if(err){
@@ -97,7 +117,6 @@ function createEvent(req, res) {
 				    res.end(JSON.stringify({ success:false, message:"Error saving event." }));
 				}
 			});
-			channel.events.push(newEvent);
 			channel.save(function(err, product, numAffected) {
 				  var response = {};
 				  if (err){  

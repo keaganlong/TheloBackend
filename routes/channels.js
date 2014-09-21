@@ -1,6 +1,11 @@
 var Channel;
 
 function getAllChannels(req, res) {
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
 	Channel.find(function(err,channels){
 		if(err){
 			res.setHeader('Content-Type', 'application/json');
@@ -15,6 +20,11 @@ function getAllChannels(req, res) {
 }
 
 function addOneChannel(req, res) {
+	if(req.get('Content-Type')!='application/json'){
+		res.setHeader('Content-Type', 'application/json');
+	    res.end(JSON.stringify({ success:false, message:"Content-Type must be application/json" }));
+		return;
+	}
 	var channel = req.body;
 	var channelName = channel["name"];
 	var newChannel = new Channel({

@@ -1,5 +1,5 @@
 module.exports = {
 
-  db: process.env.MONGODB|| "mongodb://localhost/TeloDev",
+  db: process.env.MONGODB|| "mongodb://localhost/TheloDev",
   
  };
