@@ -237,10 +237,13 @@ function addIntentUser(req, res){
 	
 	Event.findOne({_id:eventId}, function(err, event){
 		if(err || !event){
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false, message:"Event not found" }));
 			return;
 		}
 		else{
 			var intentUsers = event.intentUsers;
+
 			var add = true;
 			for(var i = 0; i<intentUsers.length && add;i++){
 				if(intentUsers[i].deviceId===deviceId){
@@ -250,6 +253,8 @@ function addIntentUser(req, res){
 			if(add){
 				User.findOne({deviceId:deviceId}, function(err, user){
 					if(err || !user){
+						res.setHeader('Content-Type', 'application/json');
+					    res.end(JSON.stringify({ success:false, message:"User not found" }));
 						return;
 					}
 					else{
@@ -259,6 +264,10 @@ function addIntentUser(req, res){
 					    res.end(JSON.stringify({ success:true }));
 					}
 				});
+			}
+			else{
+				res.setHeader('Content-Type', 'application/json');
+			    res.end(JSON.stringify({ success:false, message:"User already intenting on event." }));
 			}
 		}	
 	});
@@ -327,6 +336,8 @@ function addArrivedUser(req, res){
 	
 	Event.findOne({_id:eventId}, function(err, event){
 		if(err || !event){
+			res.setHeader('Content-Type', 'application/json');
+		    res.end(JSON.stringify({ success:false, message:"Event not found" }));
 			return;
 		}
 		else{
@@ -342,6 +353,7 @@ function addArrivedUser(req, res){
 			
 			if(intentIndex!=-1){
 				intentUsers.splice(intentIndex,1);
+				event.save();
 			}
 			
 			var add = true;
@@ -353,6 +365,8 @@ function addArrivedUser(req, res){
 			if(add){
 				User.findOne({deviceId:deviceId}, function(err, user){
 					if(err || !user){
+						res.setHeader('Content-Type', 'application/json');
+					    res.end(JSON.stringify({ success:false, message:"User not found" }));
 						return;
 					}
 					else{
@@ -362,6 +376,10 @@ function addArrivedUser(req, res){
 					    res.end(JSON.stringify({ success:true }));
 					}
 				});
+			}
+			else{
+				res.setHeader('Content-Type', 'application/json');
+			    res.end(JSON.stringify({ success:false, message:"User could not be marked as attending." }));
 			}
 		}	
 	});
