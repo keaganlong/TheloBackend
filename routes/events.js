@@ -139,7 +139,7 @@ function createEvent(req, res) {
 			});
 			if(eventExistsInList(newEvent,channel.events)){
 				res.setHeader('Content-Type', 'application/json');
-			    res.end(JSON.stringify({ success:false, message:"(Same) Event already posted." }));
+			    res.end(JSON.stringify({ success:false, message:"Event already reported." }));
 				return;
 			}
 			channel.events.push(newEvent);
