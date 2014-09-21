@@ -29,13 +29,25 @@ function getAllEventsWithinRange(req, res) {
 		    res.end(JSON.stringify({ success:false, message:"Channel not found or internal error." }));
 		    return;
 		}
-		var filteredEvents = filterEventsByLatLndRange(channel.events,lat,lng,range);
+		var filteredEvents = filterEventsByTime(filterEventsByLatLngRange(channel.events,lat,lng,range));
 		res.setHeader('Content-Type', 'application/json');
 	    res.end(JSON.stringify({ events:filteredEvents  }));
 	});
 }
 
-function filterEventsByLatLndRange(events,lat,lng,range){
+function filterEventsByTime(events){
+	var output = [];
+	var d = new Date();
+	var currTime = d.getTime() / 1000;
+	for(var i = 0; i<events.length;i++){
+		if(!(events[i].endDate > currTime)){
+			output.push(events[i]);
+		}
+	}
+	return output;
+}
+
+function filterEventsByLatLngRange(events,lat,lng,range){
 	var output = [];
 	for(var i = 0; i<events.length;i++){
 		var currEvent = events[i];
