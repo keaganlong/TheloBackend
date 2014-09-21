@@ -4,12 +4,14 @@
  */
 var routes = [
               "./routes/channels",
-              "./routes/events"
+              "./routes/events",
+              "./routes/users"
             ];
 
 var models = [
               "./models/Channel",
-              "./models/Event"
+              "./models/Event",
+              "./models/User"
               ];
 
 var express = require('express')
