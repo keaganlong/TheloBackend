@@ -181,7 +181,9 @@ function createEvent(req, res) {
 				  startDate: eventInput.startDate,
 				  endDate: eventInput.endDate,
 				  _channelId: channel._id,
-				  comments: []
+				  comments: [],			  
+				  intentUsers: [],
+				  arrivedUsers: []
 			});
 			if(eventExistsInList(newEvent,filterEventsByTime(channel.events))){
 				res.setHeader('Content-Type', 'application/json');
