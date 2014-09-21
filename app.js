@@ -5,13 +5,15 @@
 var routes = [
               "./routes/channels",
               "./routes/events",
-              "./routes/users"
+              "./routes/users",
+              "./routes/comments"
             ];
 
 var models = [
               "./models/Channel",
               "./models/Event",
-              "./models/User"
+              "./models/User",
+              "./models/Comment"
               ];
 
 var express = require('express')

@@ -6,7 +6,8 @@ function setup(mongoose) {
 			  lng: Number,
 			  startDate: Number,
 			  endDate: Number,
-			  _channelId: { type: mongoose.Schema.ObjectId, ref: 'Channel' }
+			  _channelId: { type: mongoose.Schema.ObjectId, ref: 'Channel' },
+			  comments: [{type: mongoose.Schema.ObjectId, ref: 'Comment'}]
 		};
 	var eventSchema = new mongoose.Schema(EventModel);
 	mongoose.model('Event', eventSchema);

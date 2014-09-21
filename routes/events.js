@@ -40,7 +40,7 @@ function filterEventsByTime(events){
 	var d = new Date();
 	var currTime = d.getTime() / 1000;
 	for(var i = 0; i<events.length;i++){
-		if(!(events[i].endDate > currTime)){
+		if(events[i].endDate > currTime){
 			output.push(events[i]);
 		}
 	}
@@ -120,7 +120,8 @@ function createEvent(req, res) {
 				  lng: eventInput.lng,
 				  startDate: eventInput.startDate,
 				  endDate: eventInput.endDate,
-				  _channelId: channel._id
+				  _channelId: channel._id,
+				  comments: []
 			});
 			channel.events.push(newEvent);
 			newEvent.save(function(err){
