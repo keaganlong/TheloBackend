@@ -55,7 +55,7 @@ function filterEventsByLatLngRange(events,lat,lng,range){
 		var currEvent = events[i];
 		if(currEvent.lat){//TODO REMOVE THIS HACK AFTER CLEAN DATA
 			var distance = getDistanceBetweenTwoPoints(lat,lng,currEvent.lat, currEvent.lng);
-			console.log(distance);
+			console.log("Distance: "+distance);
 			if(distance <= range){
 				output.push(currEvent);
 			}
@@ -82,7 +82,7 @@ function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
 	var d = R * c;
-	return d;
+	return d*1000;
 }
 
 /**
