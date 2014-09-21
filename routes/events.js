@@ -64,6 +64,7 @@ function filterEventsByLatLngRange(events,lat,lng,range){
 	return output;
 }
 
+//returns distance in meters
 function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 	var R = 6371;
 	Number.prototype.toRadians = function() {
@@ -84,7 +85,6 @@ function getDistanceBetweenTwoPoints(lat1,lon1,lat2,lon2){
 }
 
 /**
- * TODO: Bhavya
  * @param candidateEvent, potential event trying to be added
  * @param events, list of current events already in DB
  * @return, alreadyExists, boolean. True if the same/similar event is already present in events. False otherwise
@@ -93,6 +93,16 @@ function eventExistsInList(candidateEvent,events){
 	//If event found in events in same channel as candidate, within X meters of candidate, and same/similar title and or description as candidate. Return true.
 	//use getDistanceBetweenTwoPoints to get meter distance
 	// refer to models/Event for properties of an event
+	for (var i = 0; i < events.length; i++)
+	{
+		if (candidateEvent._channelId.equals(events[i]._channelId) &&
+			getDistanceBetweenTwoPoints(candidateEvent.lat, candidateEvent.lng, events[i].lat, events[i].lng) <= 200 &&
+			candidateEvent.title.toLowerCase() === events[i].title.toLowerCase())
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
