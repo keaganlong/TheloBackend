@@ -112,33 +112,34 @@ function similarString(string1, string2){
 	if(string1.indexOf(string2)!=-1 || string2.indexOf(string1)!=-1){
 		return true;
 	}
-	var alpha1 = {};
-	for(var i = 0; i<string1.length;i++){
-		var currChar = string1.charAt(i);
-		if(!alpha1[currChar]){
-			alpha1[currChar] = 1;
-		}
-		alpha1[currChar]++;
-	}
-	
-	var differenceBad = 0;
-	for(var j = 0; j<string2.length;j++){
-		var currChar = string2.charAt(j);
-		if(typeof alpha1[currChar] === 'undefined'){
-			differenceBad+=1;
-		}
-		else{
-			alpha1[currChar]--;
-			if(alpha1[currChar] < 1){
-				differenceBad+=1;
-			}
-		}
-	}
-	
-	if(differenceBad > 0.4*Math.max(string1.length,string2.length)){
-		return true;
-	}
 	return false;
+//	var alpha1 = {};
+//	for(var i = 0; i<string1.length;i++){
+//		var currChar = string1.charAt(i);
+//		if(!alpha1[currChar]){
+//			alpha1[currChar] = 1;
+//		}
+//		alpha1[currChar]++;
+//	}
+//	
+//	var differenceBad = 0;
+//	for(var j = 0; j<string2.length;j++){
+//		var currChar = string2.charAt(j);
+//		if(typeof alpha1[currChar] === 'undefined'){
+//			differenceBad+=1;
+//		}
+//		else{
+//			alpha1[currChar]--;
+//			if(alpha1[currChar] < 1){
+//				differenceBad+=1;
+//			}
+//		}
+//	}
+//	
+//	if(differenceBad > 0.4*Math.max(string1.length,string2.length)){
+//		return true;
+//	}
+//	return false;
 }
 
 function createEvent(req, res) {
